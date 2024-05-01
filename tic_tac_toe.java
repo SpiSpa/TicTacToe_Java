@@ -8,27 +8,17 @@
  * 6. This must be 1 and 2 player game
  */
 
- import java.io.FileWriter;
  import javax.swing.JOptionPane; 
- import javax.swing.JLabel; // helps to change font
- import javax.swing.JPanel;
- import java.util.Scanner;
- import java.awt.Font; // to change font in option pane message
- import java.awt.GridLayout;
+import javax.swing.JLabel; // helps to change font
+import javax.swing.JPanel;
+
+import java.util.Arrays;
+import java.util.Scanner;
+import java.awt.Font; // to change font in option pane message
+import java.awt.GridLayout;
 
 public class tic_tac_toe {
 
-    public void player_move(){   // in charge of player move
-        System.out.println("Place player move class here");
-    }
-
-    public void board_manager(){
-        System.out.println("manage board here");
-    }
-
-    public void check_win(){
-        System.out.println("check for a win");
-    }
     public static String XorO(int item){
         String displayXorO;
         if (item == -1){
@@ -45,28 +35,71 @@ public class tic_tac_toe {
         }
         return(displayXorO);
     }
-    public static void display(int[][] board){
+
+    public static int[] getMove(){
+        int[] move = new int[2];
+        String moveString;
+        int moveInteger;
+
+        moveString = JOptionPane.showInputDialog("Enter your move as an ordered pair.\n Ex. upper left: 00");
+        moveInteger = Integer.parseInt(moveString);
+        move[0] = moveInteger / 10;
+        move[1] = moveInteger % 10;
+        return move;
+    }
+
+    public static int display(int[][] board){
         String message1;
         String message2;
         String message3;
+        String instructions;
+
+        String moveString;
+        int move;
+        final String[] BOARD_LOCATIONS = {"00", "01", "02", "10", "11", "12", "20", "21", "22"};
+        //boolean inputCheck = false;
 
         //message1 = " X | O | X ";
         message1 = XorO(board[0][0]) + "|" + XorO(board[0][1]) + "|" + XorO(board[0][2]);
         message2 = XorO(board[1][0]) + "|" + XorO(board[1][1]) + "|" + XorO(board[1][2]);
         message3 = XorO(board[2][0]) + "|" + XorO(board[2][1]) + "|" + XorO(board[2][2]);
+        instructions = "Enter your move as an ordered pair.\n Ex. upper left: 00";
 
         JLabel label1 = new JLabel(message1); 
         JLabel label2 = new JLabel(message2);
         JLabel label3 = new JLabel(message3);
+        JLabel label4 = new JLabel(instructions);
+
         label1.setFont(new Font("Courier", Font.BOLD, 18));
         label2.setFont(new Font("Courier", Font.BOLD, 18));
         label3.setFont(new Font("Courier", Font.BOLD, 18));
+
         JPanel panel = new JPanel(new GridLayout(0, 1));
         panel.add(label1);
         panel.add(label2);
         panel.add(label3);
+        panel.add(label4);
     //found above here: https://stackoverflow.com/questions/26913923/how-do-you-change-the-size-and-font-of-a-joptionpane
-    JOptionPane.showMessageDialog(null, panel, "TTT", JOptionPane.INFORMATION_MESSAGE);
+        do{
+            moveString = JOptionPane.showInputDialog(null, panel, "TTT", JOptionPane.INFORMATION_MESSAGE);
+            if (moveString == null){
+                System.out.println("Program Ends");
+                System.exit(0);
+            }
+            try{
+            move = Integer.parseInt(moveString);  // check if input is a number
+            System.out.println("try block" + move);
+            
+        }
+        catch (IllegalArgumentException e){
+            JOptionPane.showMessageDialog(null, "Sorry!  Please input your \n move as two digits \n  e.g. 11 for the middle square.", "Whoops!", JOptionPane.INFORMATION_MESSAGE);
+            move = -1;
+            System.out.println("catch block" + move);
+        } }
+        while(Arrays.asList(BOARD_LOCATIONS).contains(moveString) == false);
+        System.out.println("exited try/catch blocks");
+        //while(moveString != "00" && moveString != "01" && moveString != "02" && moveString != "10" && moveString != "11" && moveString != "12" && moveString != "20" && moveString != "21" && moveString != "22");
+        return move;
     }
 
     public static int[][] initalizeBoard(){
@@ -78,24 +111,21 @@ public class tic_tac_toe {
         }
         return board;
     }
-    public void computer_move(){
-        System.out.println("Computer makes his move yet.");
-        //check and move for computer winning move
-        //check and block for user winning move
-        //normal moves 
-            //usually choose middle if possible
-            //then choose corner, if possible
-            //then choose non corner, if possible
-    }
-    public void game_manager1Player(){
-        System.out.println("manage 1 player game");
-    }
-    public void game_manager2Player(){
-        System.out.println("manage 2 player game");
-    }
     public static void main(String[] args) {
+        boolean gameEnd = false;
         int[][] board = new int[3][3];
+        int[] move = new int[2];
+        int moveInteger;
         board = initalizeBoard();
-        display(board);
-    }
+        while (gameEnd == false){
+            moveInteger = display(board);
+            move[0] = moveInteger / 10;
+            move[1] = moveInteger % 10;
+            System.out.println(move[0]);
+            System.out.println(move[1]);
+            board[move[0]][move[1]] = 1;
+        }
+        }
 }
+
+///Users/sarabellus/Desktop/CIS_263
