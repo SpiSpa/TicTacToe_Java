@@ -8,12 +8,12 @@
  * 6. This must be 1 and 2 player game
  */
 
- import javax.swing.JOptionPane; 
+import javax.swing.JOptionPane; 
 import javax.swing.JLabel; // helps to change font
 import javax.swing.JPanel;
 
 import java.util.Arrays;
-import java.util.Scanner;
+import java.util.Random;
 import java.awt.Font; // to change font in option pane message
 import java.awt.GridLayout;
 
@@ -36,16 +36,27 @@ public class tic_tac_toe {
         return(displayXorO);
     }
 
-    public static int[] getMove(){
-        int[] move = new int[2];
-        String moveString;
-        int moveInteger;
+    public static boolean winCheck(int[][] board){
+        int horSum;
+        int verSum;
+        int diag1Sum;
+        int diag2Sum;
 
-        moveString = JOptionPane.showInputDialog("Enter your move as an ordered pair.\n Ex. upper left: 00");
-        moveInteger = Integer.parseInt(moveString);
-        move[0] = moveInteger / 10;
-        move[1] = moveInteger % 10;
-        return move;
+        diag1Sum = board[0][0] + board[1][1] + board[2][2];
+        diag2Sum = board[0][2] + board[1][1] + board [2][0];
+
+        if (diag1Sum == 3 || diag1Sum == -3 || diag2Sum == 3 || diag2Sum == -3){
+            return true;
+        }
+        for(int i = 0; i < 3; i++){
+            horSum = board[i][0] + board[i][1] + board[i][2];
+            verSum = board[0][i] + board[1][i] + board[2][i];
+
+            if (horSum == 3 || verSum == 3 || horSum == -3 || verSum == -3){
+                return true;
+            }
+        }
+        return false;
     }
 
     public static int display(int[][] board){
@@ -89,7 +100,6 @@ public class tic_tac_toe {
             try{
             move = Integer.parseInt(moveString);  // check if input is a number
             System.out.println("try block" + move);
-            
         }
         catch (IllegalArgumentException e){
             JOptionPane.showMessageDialog(null, "Sorry!  Please input your \n move as two digits \n  e.g. 11 for the middle square.", "Whoops!", JOptionPane.INFORMATION_MESSAGE);
@@ -98,10 +108,25 @@ public class tic_tac_toe {
         } }
         while(Arrays.asList(BOARD_LOCATIONS).contains(moveString) == false);
         System.out.println("exited try/catch blocks");
-        //while(moveString != "00" && moveString != "01" && moveString != "02" && moveString != "10" && moveString != "11" && moveString != "12" && moveString != "20" && moveString != "21" && moveString != "22");
         return move;
     }
 
+    public static int computerMove(int[][] board, int i){
+        int move;
+        int[][] cornerList = {{0, 0}, {0, 2}, {2, 0}, {2, 2}};
+        int[][] nonCornerList = {{0, 1}, {1, 0}, {1, 2}, {2, 1}};
+        int decider;
+        Random rand = new Random();
+        
+        decider = rand.nextInt(9);
+
+        // check and make a winning move, first.
+
+        // check for wins
+        // if you don't block, do a "normal move"
+        move = -1;
+        return move;
+    }
     public static int[][] initalizeBoard(){
         int[][] board = new int[3][3];
         for (int i = 0; i < 3; i++){
@@ -114,16 +139,32 @@ public class tic_tac_toe {
     public static void main(String[] args) {
         boolean gameEnd = false;
         int[][] board = new int[3][3];
-        int[] move = new int[2];
+        int x; 
+        int y;
         int moveInteger;
         board = initalizeBoard();
+        // TODO: prompt if you want to go first or second.
+        // if first, do that below
+        // else if for going second. 
         while (gameEnd == false){
             moveInteger = display(board);
-            move[0] = moveInteger / 10;
-            move[1] = moveInteger % 10;
-            System.out.println(move[0]);
-            System.out.println(move[1]);
-            board[move[0]][move[1]] = 1;
+            x = moveInteger / 10;
+            y = moveInteger % 10;
+            while (board[x][y] == 1){
+                JOptionPane.showMessageDialog(null, "Sorry! That square\nhas been taken", "Whoops!", JOptionPane.INFORMATION_MESSAGE);
+                moveInteger = display(board);
+                x = moveInteger / 10;
+                y = moveInteger % 10;
+            }
+            // TODO: decide where in the code to display winning board.  
+            board[x][y] = 1;
+            gameEnd = winCheck(board);
+            if (gameEnd == true){
+                System.out.println("We have a winner!");
+            }
+            // TODO: computer move
+
+            gameEnd = winCheck(board);
         }
         }
 }
